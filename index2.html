@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #1e264b;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-image: linear-gradient(to right bottom, #051937, #2c3a59, #515f7e, #7887a4, #a1b1cc);
+    }
+    
+    .container {
+        text-align: center;
+        position: absolute;
+        top: 50px;
+        right: 40px;
+    }
+    
+    .text-field {
+        width: 300px;
+        height: 200px;
+        padding: 10px;
+        font-size: 24px;
+        border: 2px solid #ddf407;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        margin-right: 750px;
+    }
+    
+    .btn {
+        padding: 15px 30px;
+        font-size: 20px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+
+        background-image: linear-gradient(to right, #f85032 0%, #e73827  51%, #f85032  100%);
+            margin: 5px;
+            padding: 15px 30px;
+            text-align: center;
+            text-transform: uppercase;
+            transition: 0.5s;
+            background-size: 200% auto;
+            color: white;            
+            box-shadow: 0 0 20px #eee;
+            border-radius: 20px;
+            display: block;
+
+    }
+
+             
+   
+         
+             
+         
+         
+    
+    .btn:hover {
+        background-position: right center; /* change the direction of the change here */
+            color: #fff;
+            text-decoration: none;
+        
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 1px;
+        
+    }
+    
+    th, td {
+        border: 4px solid #f1c103;
+        padding: 8px;
+        text-align: left;
+        color:rgb(0, 0, 0);
+        font-family:Georgia, 'Times New Roman', Times, serif ;
+    }
+    td{
+        color: #b55e00;
+        font-weight: 500;
+        font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: whitesmoke;
+        border-radius: 10px;
+        
+    }
+    
+    th {
+        background-color: #f2f2f2;
+        border-radius: 10px;
+
+        
+    }
+</style>
+
+<form id="nutritionForm" action="#" method="GET">
+    <textarea class="text-field" name="food" placeholder="Enter food item(s)"></textarea><br>
+    <button type="submit" class="btn">Get Nutrition</button>
+</form>
+
+<div class="container">
+    <table id="nutritionTable">
+        <thead>
+            <tr>
+                <th>Food Name</th>
+                <th>Fat</th>
+                <th>Carbs</th>
+                <th>Protein</th>
+                <th>Calories</th>
+                <th>Weight (gm)</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+
+<script>
+    const apiUrl = "https://api.edamam.com/api/nutrition-data";
+    const apiKey = "7f22276420433b87b3d822b4be5ae489"; // Replace 'YOUR_API_KEY' with your actual API key
+    const appId = "0b484a4d"; // Replace 'YOUR_APP_ID' with your actual application ID
+    const searchBox = document.querySelector(".text-field");
+    const searchBtn = document.querySelector(".btn");
+    const tableBody = document.querySelector("#nutritionTable tbody");
+
+    async function checkNutri(items){
+        // Split the items by comma and trim any extra spaces
+        const itemList = items.split(',').map(item => item.trim());
+        
+        // Clear previous table rows
+        tableBody.innerHTML = '';
+
+        // Loop through each item and fetch its nutrition data 
+        for (const item of itemList) {
+            const response = await fetch(`${apiUrl}?app_id=${appId}&app_key=${apiKey}&ingr=${item}`);
+            const data = await response.json();
+            console.log(data); // Log fetched API data
+            // Create a table row for each item and populate with data
+            const newRow = document.createElement('tr');
+            newRow.innerHTML = `
+                <td>${item}</td>
+                <td>${Number((data.totalDaily.FAT.quantity).toFixed(2))}</td>
+                <td>${Number((data.totalDaily.CHOCDF.quantity).toFixed(2))}</td>
+                <td>${data.totalDaily.PROCNT.quantity}</td>
+                <td>${data.calories}</td>
+                <td>${data.totalWeight}</td>
+            `;
+            tableBody.appendChild(newRow);
+        }
+    }
+
+    document.getElementById("nutritionForm").addEventListener("submit", function(event) {
+        event.preventDefault();
+        checkNutri(searchBox.value); 
+    });
+</script>
+
+</body>
+</html>
