@@ -1,0 +1,18 @@
+.add_btn{
+    text-align: right;
+}
+.table-dark {
+    background-color: black;
+}
+
+.container{
+ overflow: auto;
+}
+.left_view h3{
+    font-size: 21px;
+
+}
+.right_view p{
+    font-size: 21px;
+
+}
